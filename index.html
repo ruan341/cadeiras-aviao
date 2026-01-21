@@ -1,70 +1,390 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{font-family:Arial;text-align:center;background:#f2f2f2;margin:0}
-.seat{width:34px;height:34px;margin:3px;border-radius:6px;
-display:inline-flex;align-items:center;justify-content:center;
-font-size:11px;color:#fff}
-.free{background:#27ae60;cursor:pointer}
-.blocked{background:#7f8c8d}
-.selected{outline:3px solid #f1c40f}
-.row{margin-bottom:6px}
-</style>
+  <meta charset="UTF-8">
+  <title>Seleção de Poltronas A350</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin: 20px 0;
+    }
+
+    .row {
+      margin-bottom: 6px;
+    }
+
+    .seat {
+      display: inline-flex;
+      width: 34px;
+      height: 34px;
+      margin: 3px;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #27ae60;
+    }
+
+    .blocked {
+      background: #7f8c8d;
+      cursor: not-allowed;
+    }
+
+    .selected {
+      outline: 3px solid #f1c40f;
+    }
+
+    button {
+      margin: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #2c3e50;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
-<h1>Airbus A350</h1>
-<div id="map"></div>
-<button onclick="go()">Confirmar</button>
 
-<script>
-const FORM =
-"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=SEAT_AQUI";
+  <h1>Airbus A350 – Escolha sua Poltrona</h1>
 
-const API =
-"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
+  <div id="mapa"></div>
 
-let sel=null;
+  <button onclick="confirmar()">Confirmar Poltrona</button>
 
-function draw(ocupadas){
-  const m=document.getElementById("map");
-  for(let r=9;r<=12;r++){
-    const d=document.createElement("div");
-    d.className="row";
-    ["A","B","C","D","E","F"].forEach(l=>{
-      const id=r+l;
-      const s=document.createElement("div");
-      s.innerText=id;
-      if(ocupadas.includes(id)){
-        s.className="seat blocked";
-      }else{
-        s.className="seat free";
-        s.onclick=()=>{
-          document.querySelectorAll(".seat.free")
-            .forEach(x=>x.classList.remove("selected"));
-          s.classList.add("selected");
-          sel=id;
-        };
+  <script>
+    const FORM_LINK =
+      "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=SEAT_AQUI";
+
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
+
+    let selecionada = null;
+
+    function criarMapa(ocupadas) {
+      const mapa = document.getElementById("mapa");
+
+      for (let fila = 9; fila <= 12; fila++) {
+        const linha = document.createElement("div");
+        linha.className = "row";
+
+        ["A","B","C","D","E","F"].forEach(letra => {
+          const id = fila + letra;
+          const seat = document.createElement("div");
+          seat.innerText = id;
+
+          if (ocupadas.includes(id)) {
+            seat.className = "seat blocked";
+          } else {
+            seat.className = "seat";
+            seat.onclick = function () {
+              document.querySelectorAll(".seat")
+                .forEach(s => s.classList.remove("selected"));
+              seat.classList.add("selected");
+              selecionada = id;
+            };
+          }
+
+          linha.appendChild(seat);
+        });
+
+        mapa.appendChild(linha);
       }
-      d.appendChild(s);
-    });
-    m.appendChild(d);
-  }
-}
+    }
 
-fetch(API)
-.then(r=>r.json())
-.then(draw)
-.catch(()=>draw([]));
+    fetch(API_URL)
+      .then(response => response.json())
+      .then(data => {
+        if (!Array.isArray(data)) data = [];
+        criarMapa(data);
+      })
+      .catch(() => {
+        criarMapa([]);
+      });
 
-function go(){
-  if(!sel){alert("Selecione uma poltrona");return;}
-  location.href=FORM.replace("SEAT_AQUI",sel);
-}
-</script>
+    function confirmar() {
+      if (!selecionada) {
+        alert("Selecione uma poltrona!");
+        return;
+      }
+      window.location.href =
+        FORM_LINK.replace("SEAT_AQUI", selecionada);
+    }
+  </script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Seleção de Poltronas A350</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin: 20px 0;
+    }
+
+    .row {
+      margin-bottom: 6px;
+    }
+
+    .seat {
+      display: inline-flex;
+      width: 34px;
+      height: 34px;
+      margin: 3px;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #27ae60;
+    }
+
+    .blocked {
+      background: #7f8c8d;
+      cursor: not-allowed;
+    }
+
+    .selected {
+      outline: 3px solid #f1c40f;
+    }
+
+    button {
+      margin: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #2c3e50;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Airbus A350 – Escolha sua Poltrona</h1>
+
+  <div id="mapa"></div>
+
+  <button onclick="confirmar()">Confirmar Poltrona</button>
+
+  <script>
+    const FORM_LINK =
+      "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=SEAT_AQUI";
+
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
+
+    let selecionada = null;
+
+    function criarMapa(ocupadas) {
+      const mapa = document.getElementById("mapa");
+
+      for (let fila = 9; fila <= 12; fila++) {
+        const linha = document.createElement("div");
+        linha.className = "row";
+
+        ["A","B","C","D","E","F"].forEach(letra => {
+          const id = fila + letra;
+          const seat = document.createElement("div");
+          seat.innerText = id;
+
+          if (ocupadas.includes(id)) {
+            seat.className = "seat blocked";
+          } else {
+            seat.className = "seat";
+            seat.onclick = function () {
+              document.querySelectorAll(".seat")
+                .forEach(s => s.classList.remove("selected"));
+              seat.classList.add("selected");
+              selecionada = id;
+            };
+          }
+
+          linha.appendChild(seat);
+        });
+
+        mapa.appendChild(linha);
+      }
+    }
+
+    fetch(API_URL)
+      .then(response => response.json())
+      .then(data => {
+        if (!Array.isArray(data)) data = [];
+        criarMapa(data);
+      })
+      .catch(() => {
+        criarMapa([]);
+      });
+
+    function confirmar() {
+      if (!selecionada) {
+        alert("Selecione uma poltrona!");
+        return;
+      }
+      window.location.href =
+        FORM_LINK.replace("SEAT_AQUI", selecionada);
+    }
+  </script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Seleção de Poltronas A350</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin: 20px 0;
+    }
+
+    .row {
+      margin-bottom: 6px;
+    }
+
+    .seat {
+      display: inline-flex;
+      width: 34px;
+      height: 34px;
+      margin: 3px;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #27ae60;
+    }
+
+    .blocked {
+      background: #7f8c8d;
+      cursor: not-allowed;
+    }
+
+    .selected {
+      outline: 3px solid #f1c40f;
+    }
+
+    button {
+      margin: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #2c3e50;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Airbus A350 – Escolha sua Poltrona</h1>
+
+  <div id="mapa"></div>
+
+  <button onclick="confirmar()">Confirmar Poltrona</button>
+
+  <script>
+    const FORM_LINK =
+      "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=SEAT_AQUI";
+
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
+
+    let selecionada = null;
+
+    function criarMapa(ocupadas) {
+      const mapa = document.getElementById("mapa");
+
+      for (let fila = 9; fila <= 12; fila++) {
+        const linha = document.createElement("div");
+        linha.className = "row";
+
+        ["A","B","C","D","E","F"].forEach(letra => {
+          const id = fila + letra;
+          const seat = document.createElement("div");
+          seat.innerText = id;
+
+          if (ocupadas.includes(id)) {
+            seat.className = "seat blocked";
+          } else {
+            seat.className = "seat";
+            seat.onclick = function () {
+              document.querySelectorAll(".seat")
+                .forEach(s => s.classList.remove("selected"));
+              seat.classList.add("selected");
+              selecionada = id;
+            };
+          }
+
+          linha.appendChild(seat);
+        });
+
+        mapa.appendChild(linha);
+      }
+    }
+
+    fetch(API_URL)
+      .then(response => response.json())
+      .then(data => {
+        if (!Array.isArray(data)) data = [];
+        criarMapa(data);
+      })
+      .catch(() => {
+        criarMapa([]);
+      });
+
+    function confirmar() {
+      if (!selecionada) {
+        alert("Selecione uma poltrona!");
+        return;
+      }
+      window.location.href =
+        FORM_LINK.replace("SEAT_AQUI", selecionada);
+    }
+  </script>
+
 </body>
 </html>
