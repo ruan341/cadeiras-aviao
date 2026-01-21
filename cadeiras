@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Escolha de Poltronas - A350</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background: #f7f7f7;
+}
+
+h1 {
+  margin: 20px 0;
+  color: #333;
+}
+
+.section {
+  margin: 30px 0;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.seat {
+  width: 40px;
+  height: 40px;
+  margin: 4px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.first { background: #8e44ad; }
+.business { background: #2980b9; }
+.economy { background: #27ae60; }
+
+.free {
+  cursor: pointer;
+}
+
+.blocked {
+  background: #7f8c8d;
+  cursor: not-allowed;
+}
+
+.selected {
+  outline: 3px solid #f1c40f;
+}
+
+.aisle {
+  width: 25px;
+}
+
+button {
+  padding: 12px 28px;
+  font-size: 18px;
+  margin: 20px;
+  cursor: pointer;
+  background: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+
+button:hover {
+  background: #1a252f;
+}
+
+/* RESPONSIVO */
+@media (max-width: 600px) {
+  .seat {
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Selecione sua Poltrona – Airbus A350</h1>
+
+<div class="section">
+  <h2>First Class</h2>
+  <div id="first-class"></div>
+</div>
+
+<div class="section">
+  <h2>Business Class</h2>
+  <div id="business-class"></div>
+</div>
+
+<div class="section">
+  <h2>Economy Class</h2>
+  <div id="economy-class"></div>
+</div>
+
+<button onclick="confirmSeat()">Confirmar Poltrona</button>
+
+<script>
+// ===== SEUS LINKS AQUI =====
+const FORM_LINK = "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=SEAT_AQUI";
+const API_URL = "https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
+
+let selectedSeat = null;
+
+// Cria as poltronas
+function createSeats(containerId, startRow, endRow, layout, className, ocupadas) {
+  const container = document.getElementById(containerId);
+  
+  for (let r = startRow; r <= endRow; r++) {
+    const row = document.createElement("div");
+    row.className = "row";
+
+    layout.forEach(item => {
+      if (item === "aisle") {
+        const aisle = document.createElement("div");
+        aisle.className = "aisle";
+        row.appendChild(aisle);
+      } else {
+        const seatId = r + item;
+        const seat = document.createElement("div");
+        seat.innerText = seatId;
+
+        // Bloqueia se já tiver no JSON
+        if (ocupadas.includes(seatId)) {
+          seat.className = "seat blocked";
+        } else {
+          seat.className = `seat free ${className}`;
+          seat.onclick = () => {
+            document.querySelectorAll(".seat.free").forEach(s => s.classList.remove("selected"));
+            seat.classList.add("selected");
+            selectedSeat = seatId;
+          };
+        }
+        row.appendChild(seat);
+      }
+    });
+
+    container.appendChild(row);
+  }
+}
+
+// CARREGA POLTRONAS OCUPADAS E DESENHA O MAPA
+fetch(API_URL)
+  .then(res => res.json())
+  .then(ocupadas => {
+    // First Class (exemplo: 1-2)
+    createSeats("first-class", 1, 2, ["A","aisle","F"], "first", ocupadas);
+
+    // Business Class (exemplo: 3-6)
+    createSeats("business-class", 3, 6, ["A","B","aisle","D","E","aisle","F","G"], "business", ocupadas);
+
+    // Economy Class (exemplo: 7-25)
+    createSeats(
+      "economy-class",
+      7,
+      25,
+      ["A","B","C","aisle","D","E","F","aisle","G","H","J"],
+      "economy",
+      ocupadas
+    );
+  });
+
+function confirmSeat() {
+  if (!selectedSeat) {
+    alert("Por favor, selecione uma poltrona!");
+    return;
+  }
+  window.location.href = FORM_LINK.replace("SEAT_AQUI", selectedSeat);
+}
+</script>
+
+</body>
+</html>
