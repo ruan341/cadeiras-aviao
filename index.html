@@ -10,7 +10,6 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   background: #f5f5f5;
-  margin: 0;
   padding: 20px;
 }
 
@@ -39,12 +38,8 @@ body {
 
 button {
   margin-top: 20px;
-  padding: 12px 22px;
+  padding: 12px 20px;
   font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  background: #333;
-  color: white;
   cursor: pointer;
 }
 </style>
@@ -59,15 +54,7 @@ button {
 <button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-/* 🔗 SEUS LINKS */
-const FORM_URL =
-"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
-
-/* POLTRONAS DO AVIÃO (SIMPLES) */
-const seatList = [
+const seats = [
   "1A","1B","1C",
   "2A","2B","2C",
   "3A","3B","3C"
@@ -75,9 +62,57 @@ const seatList = [
 
 let selectedSeat = null;
 
-/* CRIAR POLTRONAS */
-function renderSeats(occupiedSeats) {
-  const seatsDiv
+/* POLTRONAS JÁ OCUPADAS */
+let occupiedSeats = JSON.parse(localStorage.getItem("occupiedSeats")) || [];
+
+const seatsDiv = document.getElementById("seats");
+
+function renderSeats() {
+  seatsDiv.innerHTML = "";
+
+  seats.forEach(seat => {
+    const div = document.createElement("div");
+    div.className = "seat";
+    div.innerText = seat;
+
+    if (occupiedSeats.includes(seat)) {
+      div.classList.add("occupied");
+    }
+
+    div.onclick = () => {
+      if (div.classList.contains("occupied")) return;
+
+      document.querySelectorAll(".seat")
+        .forEach(s => s.classList.remove("selected"));
+
+      div.classList.add("selected");
+      selectedSeat = seat;
+    };
+
+    seatsDiv.appendChild(div);
+  });
+}
+
+function confirmSeat() {
+  if (!selectedSeat) {
+    alert("Selecione uma poltrona!");
+    return;
+  }
+
+  if (!occupiedSeats.includes(selectedSeat)) {
+    occupiedSeats.push(selectedSeat);
+    localStorage.setItem("occupiedSeats", JSON.stringify(occupiedSeats));
+  }
+
+  alert("Poltrona " + selectedSeat + " confirmada!");
+  renderSeats();
+}
+
+renderSeats();
+</script>
+
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -90,7 +125,6 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   background: #f5f5f5;
-  margin: 0;
   padding: 20px;
 }
 
@@ -119,12 +153,8 @@ body {
 
 button {
   margin-top: 20px;
-  padding: 12px 22px;
+  padding: 12px 20px;
   font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  background: #333;
-  color: white;
   cursor: pointer;
 }
 </style>
@@ -139,15 +169,7 @@ button {
 <button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-/* 🔗 SEUS LINKS */
-const FORM_URL =
-"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
-
-/* POLTRONAS DO AVIÃO (SIMPLES) */
-const seatList = [
+const seats = [
   "1A","1B","1C",
   "2A","2B","2C",
   "3A","3B","3C"
@@ -155,9 +177,57 @@ const seatList = [
 
 let selectedSeat = null;
 
-/* CRIAR POLTRONAS */
-function renderSeats(occupiedSeats) {
-  const seatsDiv
+/* POLTRONAS JÁ OCUPADAS */
+let occupiedSeats = JSON.parse(localStorage.getItem("occupiedSeats")) || [];
+
+const seatsDiv = document.getElementById("seats");
+
+function renderSeats() {
+  seatsDiv.innerHTML = "";
+
+  seats.forEach(seat => {
+    const div = document.createElement("div");
+    div.className = "seat";
+    div.innerText = seat;
+
+    if (occupiedSeats.includes(seat)) {
+      div.classList.add("occupied");
+    }
+
+    div.onclick = () => {
+      if (div.classList.contains("occupied")) return;
+
+      document.querySelectorAll(".seat")
+        .forEach(s => s.classList.remove("selected"));
+
+      div.classList.add("selected");
+      selectedSeat = seat;
+    };
+
+    seatsDiv.appendChild(div);
+  });
+}
+
+function confirmSeat() {
+  if (!selectedSeat) {
+    alert("Selecione uma poltrona!");
+    return;
+  }
+
+  if (!occupiedSeats.includes(selectedSeat)) {
+    occupiedSeats.push(selectedSeat);
+    localStorage.setItem("occupiedSeats", JSON.stringify(occupiedSeats));
+  }
+
+  alert("Poltrona " + selectedSeat + " confirmada!");
+  renderSeats();
+}
+
+renderSeats();
+</script>
+
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -170,7 +240,6 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   background: #f5f5f5;
-  margin: 0;
   padding: 20px;
 }
 
@@ -199,12 +268,8 @@ body {
 
 button {
   margin-top: 20px;
-  padding: 12px 22px;
+  padding: 12px 20px;
   font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  background: #333;
-  color: white;
   cursor: pointer;
 }
 </style>
@@ -219,15 +284,7 @@ button {
 <button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-/* 🔗 SEUS LINKS */
-const FORM_URL =
-"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
-
-/* POLTRONAS DO AVIÃO (SIMPLES) */
-const seatList = [
+const seats = [
   "1A","1B","1C",
   "2A","2B","2C",
   "3A","3B","3C"
@@ -235,9 +292,57 @@ const seatList = [
 
 let selectedSeat = null;
 
-/* CRIAR POLTRONAS */
-function renderSeats(occupiedSeats) {
-  const seatsDiv
+/* POLTRONAS JÁ OCUPADAS */
+let occupiedSeats = JSON.parse(localStorage.getItem("occupiedSeats")) || [];
+
+const seatsDiv = document.getElementById("seats");
+
+function renderSeats() {
+  seatsDiv.innerHTML = "";
+
+  seats.forEach(seat => {
+    const div = document.createElement("div");
+    div.className = "seat";
+    div.innerText = seat;
+
+    if (occupiedSeats.includes(seat)) {
+      div.classList.add("occupied");
+    }
+
+    div.onclick = () => {
+      if (div.classList.contains("occupied")) return;
+
+      document.querySelectorAll(".seat")
+        .forEach(s => s.classList.remove("selected"));
+
+      div.classList.add("selected");
+      selectedSeat = seat;
+    };
+
+    seatsDiv.appendChild(div);
+  });
+}
+
+function confirmSeat() {
+  if (!selectedSeat) {
+    alert("Selecione uma poltrona!");
+    return;
+  }
+
+  if (!occupiedSeats.includes(selectedSeat)) {
+    occupiedSeats.push(selectedSeat);
+    localStorage.setItem("occupiedSeats", JSON.stringify(occupiedSeats));
+  }
+
+  alert("Poltrona " + selectedSeat + " confirmada!");
+  renderSeats();
+}
+
+renderSeats();
+</script>
+
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -250,7 +355,6 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   background: #f5f5f5;
-  margin: 0;
   padding: 20px;
 }
 
@@ -279,12 +383,8 @@ body {
 
 button {
   margin-top: 20px;
-  padding: 12px 22px;
+  padding: 12px 20px;
   font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  background: #333;
-  color: white;
   cursor: pointer;
 }
 </style>
@@ -299,15 +399,7 @@ button {
 <button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-/* 🔗 SEUS LINKS */
-const FORM_URL =
-"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
-
-/* POLTRONAS DO AVIÃO (SIMPLES) */
-const seatList = [
+const seats = [
   "1A","1B","1C",
   "2A","2B","2C",
   "3A","3B","3C"
@@ -315,9 +407,57 @@ const seatList = [
 
 let selectedSeat = null;
 
-/* CRIAR POLTRONAS */
-function renderSeats(occupiedSeats) {
-  const seatsDiv
+/* POLTRONAS JÁ OCUPADAS */
+let occupiedSeats = JSON.parse(localStorage.getItem("occupiedSeats")) || [];
+
+const seatsDiv = document.getElementById("seats");
+
+function renderSeats() {
+  seatsDiv.innerHTML = "";
+
+  seats.forEach(seat => {
+    const div = document.createElement("div");
+    div.className = "seat";
+    div.innerText = seat;
+
+    if (occupiedSeats.includes(seat)) {
+      div.classList.add("occupied");
+    }
+
+    div.onclick = () => {
+      if (div.classList.contains("occupied")) return;
+
+      document.querySelectorAll(".seat")
+        .forEach(s => s.classList.remove("selected"));
+
+      div.classList.add("selected");
+      selectedSeat = seat;
+    };
+
+    seatsDiv.appendChild(div);
+  });
+}
+
+function confirmSeat() {
+  if (!selectedSeat) {
+    alert("Selecione uma poltrona!");
+    return;
+  }
+
+  if (!occupiedSeats.includes(selectedSeat)) {
+    occupiedSeats.push(selectedSeat);
+    localStorage.setItem("occupiedSeats", JSON.stringify(occupiedSeats));
+  }
+
+  alert("Poltrona " + selectedSeat + " confirmada!");
+  renderSeats();
+}
+
+renderSeats();
+</script>
+
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -330,7 +470,6 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   background: #f5f5f5;
-  margin: 0;
   padding: 20px;
 }
 
@@ -359,12 +498,8 @@ body {
 
 button {
   margin-top: 20px;
-  padding: 12px 22px;
+  padding: 12px 20px;
   font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  background: #333;
-  color: white;
   cursor: pointer;
 }
 </style>
@@ -379,15 +514,7 @@ button {
 <button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-/* 🔗 SEUS LINKS */
-const FORM_URL =
-"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
-
-/* POLTRONAS DO AVIÃO (SIMPLES) */
-const seatList = [
+const seats = [
   "1A","1B","1C",
   "2A","2B","2C",
   "3A","3B","3C"
@@ -395,166 +522,54 @@ const seatList = [
 
 let selectedSeat = null;
 
-/* CRIAR POLTRONAS */
-function renderSeats(occupiedSeats) {
-  const seatsDiv
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<title>Escolha sua Poltrona</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+/* POLTRONAS JÁ OCUPADAS */
+let occupiedSeats = JSON.parse(localStorage.getItem("occupiedSeats")) || [];
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f5f5f5;
-  margin: 0;
-  padding: 20px;
+const seatsDiv = document.getElementById("seats");
+
+function renderSeats() {
+  seatsDiv.innerHTML = "";
+
+  seats.forEach(seat => {
+    const div = document.createElement("div");
+    div.className = "seat";
+    div.innerText = seat;
+
+    if (occupiedSeats.includes(seat)) {
+      div.classList.add("occupied");
+    }
+
+    div.onclick = () => {
+      if (div.classList.contains("occupied")) return;
+
+      document.querySelectorAll(".seat")
+        .forEach(s => s.classList.remove("selected"));
+
+      div.classList.add("selected");
+      selectedSeat = seat;
+    };
+
+    seatsDiv.appendChild(div);
+  });
 }
 
-.seat {
-  width: 40px;
-  height: 40px;
-  margin: 5px;
-  background: #2ecc71;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 6px;
-  color: white;
-  font-size: 12px;
+function confirmSeat() {
+  if (!selectedSeat) {
+    alert("Selecione uma poltrona!");
+    return;
+  }
+
+  if (!occupiedSeats.includes(selectedSeat)) {
+    occupiedSeats.push(selectedSeat);
+    localStorage.setItem("occupiedSeats", JSON.stringify(occupiedSeats));
+  }
+
+  alert("Poltrona " + selectedSeat + " confirmada!");
+  renderSeats();
 }
 
-.seat.selected {
-  background: #3498db;
-}
+renderSeats();
+</script>
 
-.seat.occupied {
-  background: #e74c3c;
-  cursor: not-allowed;
-}
-
-button {
-  margin-top: 20px;
-  padding: 12px 22px;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  background: #333;
-  color: white;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h2>Escolha sua Poltrona</h2>
-
-<div id="seats"></div>
-
-<button onclick="confirmSeat()">Confirmar Poltrona</button>
-
-<script>
-/* 🔗 SEUS LINKS */
-const FORM_URL =
-"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
-
-/* POLTRONAS DO AVIÃO (SIMPLES) */
-const seatList = [
-  "1A","1B","1C",
-  "2A","2B","2C",
-  "3A","3B","3C"
-];
-
-let selectedSeat = null;
-
-/* CRIAR POLTRONAS */
-function renderSeats(occupiedSeats) {
-  const seatsDiv
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<title>Escolha sua Poltrona</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f5f5f5;
-  margin: 0;
-  padding: 20px;
-}
-
-.seat {
-  width: 40px;
-  height: 40px;
-  margin: 5px;
-  background: #2ecc71;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 6px;
-  color: white;
-  font-size: 12px;
-}
-
-.seat.selected {
-  background: #3498db;
-}
-
-.seat.occupied {
-  background: #e74c3c;
-  cursor: not-allowed;
-}
-
-button {
-  margin-top: 20px;
-  padding: 12px 22px;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  background: #333;
-  color: white;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h2>Escolha sua Poltrona</h2>
-
-<div id="seats"></div>
-
-<button onclick="confirmSeat()">Confirmar Poltrona</button>
-
-<script>
-/* 🔗 SEUS LINKS */
-const FORM_URL =
-"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
-
-/* POLTRONAS DO AVIÃO (SIMPLES) */
-const seatList = [
-  "1A","1B","1C",
-  "2A","2B","2C",
-  "3A","3B","3C"
-];
-
-let selectedSeat = null;
-
-/* CRIAR POLTRONAS */
-function renderSeats(occupiedSeats) {
-  const seatsDiv
+</body>
+</html>
