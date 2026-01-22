@@ -1,65 +1,50 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
+<title>Escolha sua Poltrona</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
   text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 20px;
 }
 
 .seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
+  width: 40px;
+  height: 40px;
+  margin: 5px;
+  background: #2ecc71;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  color: #fff;
   cursor: pointer;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
 }
 
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
+.seat.selected {
+  background: #3498db;
 }
 
-.aisle {
-  width: 18px;
+.seat.occupied {
+  background: #e74c3c;
+  cursor: not-allowed;
 }
 
 button {
-  padding: 14px 28px;
+  margin-top: 20px;
+  padding: 12px 22px;
   font-size: 16px;
   border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
+  border-radius: 6px;
+  background: #333;
+  color: white;
   cursor: pointer;
 }
 </style>
@@ -67,164 +52,79 @@ button {
 
 <body>
 
-<h1>Airbus A350 – Mapa de Poltronas</h1>
+<h2>Escolha sua Poltrona</h2>
 
-<div id="mapa"></div>
+<div id="seats"></div>
 
-<button onclick="confirmar()">Confirmar Poltrona</button>
+<button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-let escolhida = null;
+/* 🔗 SEUS LINKS */
+const FORM_URL =
+"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
 
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
 
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
+/* POLTRONAS DO AVIÃO (SIMPLES) */
+const seatList = [
+  "1A","1B","1C",
+  "2A","2B","2C",
+  "3A","3B","3C"
+];
 
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
+let selectedSeat = null;
 
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
+/* CRIAR POLTRONAS */
+function renderSeats(occupiedSeats) {
+  const seatsDiv
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
+<title>Escolha sua Poltrona</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
   text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 20px;
 }
 
 .seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
+  width: 40px;
+  height: 40px;
+  margin: 5px;
+  background: #2ecc71;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  color: #fff;
   cursor: pointer;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
 }
 
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
+.seat.selected {
+  background: #3498db;
 }
 
-.aisle {
-  width: 18px;
+.seat.occupied {
+  background: #e74c3c;
+  cursor: not-allowed;
 }
 
 button {
-  padding: 14px 28px;
+  margin-top: 20px;
+  padding: 12px 22px;
   font-size: 16px;
   border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
+  border-radius: 6px;
+  background: #333;
+  color: white;
   cursor: pointer;
 }
 </style>
@@ -232,164 +132,79 @@ button {
 
 <body>
 
-<h1>Airbus A350 – Mapa de Poltronas</h1>
+<h2>Escolha sua Poltrona</h2>
 
-<div id="mapa"></div>
+<div id="seats"></div>
 
-<button onclick="confirmar()">Confirmar Poltrona</button>
+<button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-let escolhida = null;
+/* 🔗 SEUS LINKS */
+const FORM_URL =
+"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
 
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
 
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
+/* POLTRONAS DO AVIÃO (SIMPLES) */
+const seatList = [
+  "1A","1B","1C",
+  "2A","2B","2C",
+  "3A","3B","3C"
+];
 
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
+let selectedSeat = null;
 
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
+/* CRIAR POLTRONAS */
+function renderSeats(occupiedSeats) {
+  const seatsDiv
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
+<title>Escolha sua Poltrona</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
   text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 20px;
 }
 
 .seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
+  width: 40px;
+  height: 40px;
+  margin: 5px;
+  background: #2ecc71;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  color: #fff;
   cursor: pointer;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
 }
 
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
+.seat.selected {
+  background: #3498db;
 }
 
-.aisle {
-  width: 18px;
+.seat.occupied {
+  background: #e74c3c;
+  cursor: not-allowed;
 }
 
 button {
-  padding: 14px 28px;
+  margin-top: 20px;
+  padding: 12px 22px;
   font-size: 16px;
   border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
+  border-radius: 6px;
+  background: #333;
+  color: white;
   cursor: pointer;
 }
 </style>
@@ -397,164 +212,79 @@ button {
 
 <body>
 
-<h1>Airbus A350 – Mapa de Poltronas</h1>
+<h2>Escolha sua Poltrona</h2>
 
-<div id="mapa"></div>
+<div id="seats"></div>
 
-<button onclick="confirmar()">Confirmar Poltrona</button>
+<button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-let escolhida = null;
+/* 🔗 SEUS LINKS */
+const FORM_URL =
+"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
 
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
 
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
+/* POLTRONAS DO AVIÃO (SIMPLES) */
+const seatList = [
+  "1A","1B","1C",
+  "2A","2B","2C",
+  "3A","3B","3C"
+];
 
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
+let selectedSeat = null;
 
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
+/* CRIAR POLTRONAS */
+function renderSeats(occupiedSeats) {
+  const seatsDiv
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
+<title>Escolha sua Poltrona</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
   text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 20px;
 }
 
 .seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
+  width: 40px;
+  height: 40px;
+  margin: 5px;
+  background: #2ecc71;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  color: #fff;
   cursor: pointer;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
 }
 
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
+.seat.selected {
+  background: #3498db;
 }
 
-.aisle {
-  width: 18px;
+.seat.occupied {
+  background: #e74c3c;
+  cursor: not-allowed;
 }
 
 button {
-  padding: 14px 28px;
+  margin-top: 20px;
+  padding: 12px 22px;
   font-size: 16px;
   border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
+  border-radius: 6px;
+  background: #333;
+  color: white;
   cursor: pointer;
 }
 </style>
@@ -562,164 +292,79 @@ button {
 
 <body>
 
-<h1>Airbus A350 – Mapa de Poltronas</h1>
+<h2>Escolha sua Poltrona</h2>
 
-<div id="mapa"></div>
+<div id="seats"></div>
 
-<button onclick="confirmar()">Confirmar Poltrona</button>
+<button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-let escolhida = null;
+/* 🔗 SEUS LINKS */
+const FORM_URL =
+"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
 
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
 
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
+/* POLTRONAS DO AVIÃO (SIMPLES) */
+const seatList = [
+  "1A","1B","1C",
+  "2A","2B","2C",
+  "3A","3B","3C"
+];
 
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
+let selectedSeat = null;
 
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
+/* CRIAR POLTRONAS */
+function renderSeats(occupiedSeats) {
+  const seatsDiv
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
+<title>Escolha sua Poltrona</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
   text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 20px;
 }
 
 .seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
+  width: 40px;
+  height: 40px;
+  margin: 5px;
+  background: #2ecc71;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  color: #fff;
   cursor: pointer;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
 }
 
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
+.seat.selected {
+  background: #3498db;
 }
 
-.aisle {
-  width: 18px;
+.seat.occupied {
+  background: #e74c3c;
+  cursor: not-allowed;
 }
 
 button {
-  padding: 14px 28px;
+  margin-top: 20px;
+  padding: 12px 22px;
   font-size: 16px;
   border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
+  border-radius: 6px;
+  background: #333;
+  color: white;
   cursor: pointer;
 }
 </style>
@@ -727,164 +372,79 @@ button {
 
 <body>
 
-<h1>Airbus A350 – Mapa de Poltronas</h1>
+<h2>Escolha sua Poltrona</h2>
 
-<div id="mapa"></div>
+<div id="seats"></div>
 
-<button onclick="confirmar()">Confirmar Poltrona</button>
+<button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-let escolhida = null;
+/* 🔗 SEUS LINKS */
+const FORM_URL =
+"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
 
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
 
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
+/* POLTRONAS DO AVIÃO (SIMPLES) */
+const seatList = [
+  "1A","1B","1C",
+  "2A","2B","2C",
+  "3A","3B","3C"
+];
 
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
+let selectedSeat = null;
 
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
+/* CRIAR POLTRONAS */
+function renderSeats(occupiedSeats) {
+  const seatsDiv
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
+<title>Escolha sua Poltrona</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
   text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 20px;
 }
 
 .seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
+  width: 40px;
+  height: 40px;
+  margin: 5px;
+  background: #2ecc71;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  color: #fff;
   cursor: pointer;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
 }
 
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
+.seat.selected {
+  background: #3498db;
 }
 
-.aisle {
-  width: 18px;
+.seat.occupied {
+  background: #e74c3c;
+  cursor: not-allowed;
 }
 
 button {
-  padding: 14px 28px;
+  margin-top: 20px;
+  padding: 12px 22px;
   font-size: 16px;
   border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
+  border-radius: 6px;
+  background: #333;
+  color: white;
   cursor: pointer;
 }
 </style>
@@ -892,164 +452,79 @@ button {
 
 <body>
 
-<h1>Airbus A350 – Mapa de Poltronas</h1>
+<h2>Escolha sua Poltrona</h2>
 
-<div id="mapa"></div>
+<div id="seats"></div>
 
-<button onclick="confirmar()">Confirmar Poltrona</button>
+<button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-let escolhida = null;
+/* 🔗 SEUS LINKS */
+const FORM_URL =
+"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
 
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
 
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
+/* POLTRONAS DO AVIÃO (SIMPLES) */
+const seatList = [
+  "1A","1B","1C",
+  "2A","2B","2C",
+  "3A","3B","3C"
+];
 
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
+let selectedSeat = null;
 
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
+/* CRIAR POLTRONAS */
+function renderSeats(occupiedSeats) {
+  const seatsDiv
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
+<title>Escolha sua Poltrona</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
   text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 20px;
 }
 
 .seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
+  width: 40px;
+  height: 40px;
+  margin: 5px;
+  background: #2ecc71;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  color: #fff;
   cursor: pointer;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
 }
 
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
+.seat.selected {
+  background: #3498db;
 }
 
-.aisle {
-  width: 18px;
+.seat.occupied {
+  background: #e74c3c;
+  cursor: not-allowed;
 }
 
 button {
-  padding: 14px 28px;
+  margin-top: 20px;
+  padding: 12px 22px;
   font-size: 16px;
   border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
+  border-radius: 6px;
+  background: #333;
+  color: white;
   cursor: pointer;
 }
 </style>
@@ -1057,1254 +532,29 @@ button {
 
 <body>
 
-<h1>Airbus A350 – Mapa de Poltronas</h1>
+<h2>Escolha sua Poltrona</h2>
 
-<div id="mapa"></div>
+<div id="seats"></div>
 
-<button onclick="confirmar()">Confirmar Poltrona</button>
-
-<script>
-let escolhida = null;
-
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
-
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
-
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
-
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
-  text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-
-.seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: #fff;
-  cursor: pointer;
-}
-
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
-}
-
-.aisle {
-  width: 18px;
-}
-
-button {
-  padding: 14px 28px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h1>Airbus A350 – Mapa de Poltronas</h1>
-
-<div id="mapa"></div>
-
-<button onclick="confirmar()">Confirmar Poltrona</button>
+<button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-let escolhida = null;
-
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
-
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
-
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
-
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
-  text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-
-.seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: #fff;
-  cursor: pointer;
-}
-
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
-}
-
-.aisle {
-  width: 18px;
-}
-
-button {
-  padding: 14px 28px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h1>Airbus A350 – Mapa de Poltronas</h1>
-
-<div id="mapa"></div>
-
-<button onclick="confirmar()">Confirmar Poltrona</button>
-
-<script>
-let escolhida = null;
-
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
-
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
-
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
-
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
-  text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-
-.seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: #fff;
-  cursor: pointer;
-}
-
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
-}
-
-.aisle {
-  width: 18px;
-}
-
-button {
-  padding: 14px 28px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h1>Airbus A350 – Mapa de Poltronas</h1>
-
-<div id="mapa"></div>
-
-<button onclick="confirmar()">Confirmar Poltrona</button>
-
-<script>
-let escolhida = null;
-
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
-
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
-
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
-
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
-  text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-
-.seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: #fff;
-  cursor: pointer;
-}
-
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
-}
-
-.aisle {
-  width: 18px;
-}
-
-button {
-  padding: 14px 28px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h1>Airbus A350 – Mapa de Poltronas</h1>
-
-<div id="mapa"></div>
-
-<button onclick="confirmar()">Confirmar Poltrona</button>
-
-<script>
-let escolhida = null;
-
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
-
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
-
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
-
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
-  text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-
-.seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: #fff;
-  cursor: pointer;
-}
-
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
-}
-
-.aisle {
-  width: 18px;
-}
-
-button {
-  padding: 14px 28px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h1>Airbus A350 – Mapa de Poltronas</h1>
-
-<div id="mapa"></div>
-
-<button onclick="confirmar()">Confirmar Poltrona</button>
-
-<script>
-let escolhida = null;
-
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
-
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
-
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
-
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
-  text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-
-.seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: #fff;
-  cursor: pointer;
-}
-
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
-}
-
-.aisle {
-  width: 18px;
-}
-
-button {
-  padding: 14px 28px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h1>Airbus A350 – Mapa de Poltronas</h1>
-
-<div id="mapa"></div>
-
-<button onclick="confirmar()">Confirmar Poltrona</button>
-
-<script>
-let escolhida = null;
-
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
-
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
-
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
-
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>A350 – Seleção de Poltronas</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
-  text-align: center;
-}
-
-h1 { margin: 10px 0; }
-h2 { margin: 25px 0 10px; }
-
-.cabin {
-  margin-bottom: 30px;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-
-.seat {
-  width: 34px;
-  height: 34px;
-  margin: 3px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: #fff;
-  cursor: pointer;
-}
-
-.first { background:#6c3483; }
-.business { background:#2471a3; }
-.premium { background:#148f77; }
-.economy { background:#239b56; }
-
-.selected {
-  outline: 3px solid #f1c40f;
-}
-
-.aisle {
-  width: 18px;
-}
-
-button {
-  padding: 14px 28px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background: #2c3e50;
-  color: #fff;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h1>Airbus A350 – Mapa de Poltronas</h1>
-
-<div id="mapa"></div>
-
-<button onclick="confirmar()">Confirmar Poltrona</button>
-
-<script>
-let escolhida = null;
-
-function criarAssento(id, classe) {
-  const s = document.createElement("div");
-  s.className = "seat " + classe;
-  s.textContent = id;
-  s.onclick = () => {
-    document.querySelectorAll(".seat")
-      .forEach(x => x.classList.remove("selected"));
-    s.classList.add("selected");
-    escolhida = id;
-  };
-  return s;
-}
-
-function criarCabine(titulo, inicio, fim, layout, classe) {
-  const mapa = document.getElementById("mapa");
-  const c = document.createElement("div");
-  c.className = "cabin";
-
-  const h = document.createElement("h2");
-  h.textContent = titulo;
-  c.appendChild(h);
-
-  for (let f = inicio; f <= fim; f++) {
-    const r = document.createElement("div");
-    r.className = "row";
-
-    layout.forEach(l => {
-      if (l === "|") {
-        const a = document.createElement("div");
-        a.className = "aisle";
-        r.appendChild(a);
-      } else {
-        r.appendChild(criarAssento(f + l, classe));
-      }
-    });
-
-    c.appendChild(r);
-  }
-
-  mapa.appendChild(c);
-}
-
-/* FIRST CLASS */
-criarCabine(
-  "First Class",
-  1, 2,
-  ["A","|","D","G","|","K"],
-  "first"
-);
-
-/* BUSINESS */
-criarCabine(
-  "Business Class",
-  3, 8,
-  ["A","|","D","G","|","K"],
-  "business"
-);
-
-/* PREMIUM ECONOMY */
-criarCabine(
-  "Premium Economy",
-  9, 12,
-  ["A","B","|","D","E","F","|","H","J"],
-  "premium"
-);
-
-/* ECONOMY */
-criarCabine(
-  "Economy",
-  13, 35,
-  ["A","B","C","|","D","E","F","|","G","H","J"],
-  "economy"
-);
-
-function confirmar() {
-  if (!escolhida) {
-    alert("Selecione uma poltrona");
-    return;
-  }
-
-  window.location.href =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=" + escolhida;
-}
-</script>
-
-</body>
-</html>
+/* 🔗 SEUS LINKS */
+const FORM_URL =
+"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=";
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxasFqWB5ZLfWHbZBt8RfaKlFwxo8zwHG_b-4OBkvo6NUz8DH7rgmAB57_k2aeT_RqI8w/exec";
+
+/* POLTRONAS DO AVIÃO (SIMPLES) */
+const seatList = [
+  "1A","1B","1C",
+  "2A","2B","2C",
+  "3A","3B","3C"
+];
+
+let selectedSeat = null;
+
+/* CRIAR POLTRONAS */
+function renderSeats(occupiedSeats) {
+  const seatsDiv
