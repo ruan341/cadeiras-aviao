@@ -2,95 +2,160 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Escolha sua Poltrona</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seleção de Poltronas – Airbus A350</title>
 
 <style>
 body {
   font-family: Arial, sans-serif;
+  background: #f4f4f4;
   text-align: center;
-  background: #f5f5f5;
-  padding: 20px;
+}
+
+.section {
+  margin: 25px 0;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
 }
 
 .seat {
-  width: 40px;
-  height: 40px;
-  margin: 5px;
+  width: 36px;
+  height: 36px;
+  margin: 3px;
   background: #2ecc71;
-  display: inline-flex;
+  color: white;
+  font-size: 11px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   border-radius: 6px;
-  color: white;
-  font-size: 12px;
+  cursor: pointer;
 }
 
-.seat.selected {
-  background: #3498db;
+.first { background: #8e44ad; }
+.business { background: #2980b9; }
+.economy { background: #27ae60; }
+
+.selected {
+  outline: 3px solid #f1c40f;
 }
 
-.seat.occupied {
-  background: #e74c3c;
+.occupied {
+  background: #7f8c8d !important;
   cursor: not-allowed;
 }
 
+.aisle {
+  width: 20px;
+}
+
 button {
-  margin-top: 20px;
-  padding: 12px 20px;
+  margin: 20px;
+  padding: 12px 30px;
   font-size: 16px;
-  cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Escolha sua Poltrona</h2>
+<h2>Seleção de Poltronas – Airbus A350</h2>
 
-<div id="seats"></div>
+<div id="plane"></div>
 
 <button onclick="confirmSeat()">Confirmar Poltrona</button>
 
 <script>
-const seats = [
-  "1A","1B","1C",
-  "2A","2B","2C",
-  "3A","3B","3C"
-];
-
 let selectedSeat = null;
 
-/* POLTRONAS JÁ OCUPADAS */
+/* 🔗 LINKS PRONTOS */
+const FORM_LINK =
+"https://docs.google.com/forms/d/e/1FAIpQLSf0wYXE6i7JPQCBkKR5LqyRdwxRscpSmclDMQJXTs_llonIbA/viewform?usp=pp_url&entry.1796450485=SEAT_AQUI";
+
+/* 💾 POLTRONAS OCUPADAS */
 let occupiedSeats = JSON.parse(localStorage.getItem("occupiedSeats")) || [];
 
-const seatsDiv = document.getElementById("seats");
+// Função auxiliar
+function createSeat(row, letter, cls) {
+  const seat = document.createElement("div");
+  const seatId = row + letter;
+  seat.className = `seat ${cls}`;
+  seat.innerText = seatId;
 
-function renderSeats() {
-  seatsDiv.innerHTML = "";
+  if (occupiedSeats.includes(seatId)) {
+    seat.classList.add("occupied");
+  }
 
-  seats.forEach(seat => {
-    const div = document.createElement("div");
-    div.className = "seat";
-    div.innerText = seat;
+  seat.onclick = () => {
+    if (seat.classList.contains("occupied")) return;
 
-    if (occupiedSeats.includes(seat)) {
-      div.classList.add("occupied");
-    }
+    document.querySelectorAll(".seat")
+      .forEach(s => s.classList.remove("selected"));
 
-    div.onclick = () => {
-      if (div.classList.contains("occupied")) return;
+    seat.classList.add("selected");
+    selectedSeat = seatId;
+  };
 
-      document.querySelectorAll(".seat")
-        .forEach(s => s.classList.remove("selected"));
+  return seat;
+}
 
-      div.classList.add("selected");
-      selectedSeat = seat;
-    };
+const plane = document.getElementById("plane");
 
-    seatsDiv.appendChild(div);
-  });
+/* ===== FIRST CLASS ===== */
+plane.innerHTML += `<div class="section"><div class="title">First Class</div></div>`;
+for (let r = 1; r <= 2; r++) {
+  const row = document.createElement("div");
+  row.className = "row";
+
+  row.appendChild(createSeat(r,"A","first"));
+  row.appendChild(document.createElement("div")).className="aisle";
+  row.appendChild(createSeat(r,"D","first"));
+  row.appendChild(createSeat(r,"G","first"));
+  row.appendChild(document.createElement("div")).className="aisle";
+  row.appendChild(createSeat(r,"K","first"));
+
+  plane.appendChild(row);
+}
+
+/* ===== BUSINESS CLASS ===== */
+plane.innerHTML += `<div class="section"><div class="title">Business Class</div></div>`;
+for (let r = 3; r <= 8; r++) {
+  const row = document.createElement("div");
+  row.className = "row";
+
+  row.appendChild(createSeat(r,"A","business"));
+  row.appendChild(createSeat(r,"C","business"));
+  row.appendChild(document.createElement("div")).className="aisle";
+  row.appendChild(createSeat(r,"D","business"));
+  row.appendChild(createSeat(r,"G","business"));
+  row.appendChild(document.createElement("div")).className="aisle";
+  row.appendChild(createSeat(r,"H","business"));
+  row.appendChild(createSeat(r,"K","business"));
+
+  plane.appendChild(row);
+}
+
+/* ===== ECONOMY CLASS ===== */
+plane.innerHTML += `<div class="section"><div class="title">Economy Class</div></div>`;
+for (let r = 9; r <= 40; r++) {
+  const row = document.createElement("div");
+  row.className = "row";
+
+  ["A","B","C"].forEach(l => row.appendChild(createSeat(r,l,"economy")));
+  row.appendChild(document.createElement("div")).className="aisle";
+  ["D","E","F"].forEach(l => row.appendChild(createSeat(r,l,"economy")));
+  row.appendChild(document.createElement("div")).className="aisle";
+  ["G","H","J"].forEach(l => row.appendChild(createSeat(r,l,"economy")));
+
+  plane.appendChild(row);
 }
 
 function confirmSeat() {
@@ -104,471 +169,9 @@ function confirmSeat() {
     localStorage.setItem("occupiedSeats", JSON.stringify(occupiedSeats));
   }
 
-  alert("Poltrona " + selectedSeat + " confirmada!");
-  renderSeats();
+  window.location.href =
+    FORM_LINK.replace("SEAT_AQUI", selectedSeat);
 }
-
-renderSeats();
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<title>Escolha sua Poltrona</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f5f5f5;
-  padding: 20px;
-}
-
-.seat {
-  width: 40px;
-  height: 40px;
-  margin: 5px;
-  background: #2ecc71;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 6px;
-  color: white;
-  font-size: 12px;
-}
-
-.seat.selected {
-  background: #3498db;
-}
-
-.seat.occupied {
-  background: #e74c3c;
-  cursor: not-allowed;
-}
-
-button {
-  margin-top: 20px;
-  padding: 12px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h2>Escolha sua Poltrona</h2>
-
-<div id="seats"></div>
-
-<button onclick="confirmSeat()">Confirmar Poltrona</button>
-
-<script>
-const seats = [
-  "1A","1B","1C",
-  "2A","2B","2C",
-  "3A","3B","3C"
-];
-
-let selectedSeat = null;
-
-/* POLTRONAS JÁ OCUPADAS */
-let occupiedSeats = JSON.parse(localStorage.getItem("occupiedSeats")) || [];
-
-const seatsDiv = document.getElementById("seats");
-
-function renderSeats() {
-  seatsDiv.innerHTML = "";
-
-  seats.forEach(seat => {
-    const div = document.createElement("div");
-    div.className = "seat";
-    div.innerText = seat;
-
-    if (occupiedSeats.includes(seat)) {
-      div.classList.add("occupied");
-    }
-
-    div.onclick = () => {
-      if (div.classList.contains("occupied")) return;
-
-      document.querySelectorAll(".seat")
-        .forEach(s => s.classList.remove("selected"));
-
-      div.classList.add("selected");
-      selectedSeat = seat;
-    };
-
-    seatsDiv.appendChild(div);
-  });
-}
-
-function confirmSeat() {
-  if (!selectedSeat) {
-    alert("Selecione uma poltrona!");
-    return;
-  }
-
-  if (!occupiedSeats.includes(selectedSeat)) {
-    occupiedSeats.push(selectedSeat);
-    localStorage.setItem("occupiedSeats", JSON.stringify(occupiedSeats));
-  }
-
-  alert("Poltrona " + selectedSeat + " confirmada!");
-  renderSeats();
-}
-
-renderSeats();
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<title>Escolha sua Poltrona</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f5f5f5;
-  padding: 20px;
-}
-
-.seat {
-  width: 40px;
-  height: 40px;
-  margin: 5px;
-  background: #2ecc71;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 6px;
-  color: white;
-  font-size: 12px;
-}
-
-.seat.selected {
-  background: #3498db;
-}
-
-.seat.occupied {
-  background: #e74c3c;
-  cursor: not-allowed;
-}
-
-button {
-  margin-top: 20px;
-  padding: 12px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h2>Escolha sua Poltrona</h2>
-
-<div id="seats"></div>
-
-<button onclick="confirmSeat()">Confirmar Poltrona</button>
-
-<script>
-const seats = [
-  "1A","1B","1C",
-  "2A","2B","2C",
-  "3A","3B","3C"
-];
-
-let selectedSeat = null;
-
-/* POLTRONAS JÁ OCUPADAS */
-let occupiedSeats = JSON.parse(localStorage.getItem("occupiedSeats")) || [];
-
-const seatsDiv = document.getElementById("seats");
-
-function renderSeats() {
-  seatsDiv.innerHTML = "";
-
-  seats.forEach(seat => {
-    const div = document.createElement("div");
-    div.className = "seat";
-    div.innerText = seat;
-
-    if (occupiedSeats.includes(seat)) {
-      div.classList.add("occupied");
-    }
-
-    div.onclick = () => {
-      if (div.classList.contains("occupied")) return;
-
-      document.querySelectorAll(".seat")
-        .forEach(s => s.classList.remove("selected"));
-
-      div.classList.add("selected");
-      selectedSeat = seat;
-    };
-
-    seatsDiv.appendChild(div);
-  });
-}
-
-function confirmSeat() {
-  if (!selectedSeat) {
-    alert("Selecione uma poltrona!");
-    return;
-  }
-
-  if (!occupiedSeats.includes(selectedSeat)) {
-    occupiedSeats.push(selectedSeat);
-    localStorage.setItem("occupiedSeats", JSON.stringify(occupiedSeats));
-  }
-
-  alert("Poltrona " + selectedSeat + " confirmada!");
-  renderSeats();
-}
-
-renderSeats();
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<title>Escolha sua Poltrona</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f5f5f5;
-  padding: 20px;
-}
-
-.seat {
-  width: 40px;
-  height: 40px;
-  margin: 5px;
-  background: #2ecc71;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 6px;
-  color: white;
-  font-size: 12px;
-}
-
-.seat.selected {
-  background: #3498db;
-}
-
-.seat.occupied {
-  background: #e74c3c;
-  cursor: not-allowed;
-}
-
-button {
-  margin-top: 20px;
-  padding: 12px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h2>Escolha sua Poltrona</h2>
-
-<div id="seats"></div>
-
-<button onclick="confirmSeat()">Confirmar Poltrona</button>
-
-<script>
-const seats = [
-  "1A","1B","1C",
-  "2A","2B","2C",
-  "3A","3B","3C"
-];
-
-let selectedSeat = null;
-
-/* POLTRONAS JÁ OCUPADAS */
-let occupiedSeats = JSON.parse(localStorage.getItem("occupiedSeats")) || [];
-
-const seatsDiv = document.getElementById("seats");
-
-function renderSeats() {
-  seatsDiv.innerHTML = "";
-
-  seats.forEach(seat => {
-    const div = document.createElement("div");
-    div.className = "seat";
-    div.innerText = seat;
-
-    if (occupiedSeats.includes(seat)) {
-      div.classList.add("occupied");
-    }
-
-    div.onclick = () => {
-      if (div.classList.contains("occupied")) return;
-
-      document.querySelectorAll(".seat")
-        .forEach(s => s.classList.remove("selected"));
-
-      div.classList.add("selected");
-      selectedSeat = seat;
-    };
-
-    seatsDiv.appendChild(div);
-  });
-}
-
-function confirmSeat() {
-  if (!selectedSeat) {
-    alert("Selecione uma poltrona!");
-    return;
-  }
-
-  if (!occupiedSeats.includes(selectedSeat)) {
-    occupiedSeats.push(selectedSeat);
-    localStorage.setItem("occupiedSeats", JSON.stringify(occupiedSeats));
-  }
-
-  alert("Poltrona " + selectedSeat + " confirmada!");
-  renderSeats();
-}
-
-renderSeats();
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<title>Escolha sua Poltrona</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f5f5f5;
-  padding: 20px;
-}
-
-.seat {
-  width: 40px;
-  height: 40px;
-  margin: 5px;
-  background: #2ecc71;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 6px;
-  color: white;
-  font-size: 12px;
-}
-
-.seat.selected {
-  background: #3498db;
-}
-
-.seat.occupied {
-  background: #e74c3c;
-  cursor: not-allowed;
-}
-
-button {
-  margin-top: 20px;
-  padding: 12px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-</style>
-</head>
-
-<body>
-
-<h2>Escolha sua Poltrona</h2>
-
-<div id="seats"></div>
-
-<button onclick="confirmSeat()">Confirmar Poltrona</button>
-
-<script>
-const seats = [
-  "1A","1B","1C",
-  "2A","2B","2C",
-  "3A","3B","3C"
-];
-
-let selectedSeat = null;
-
-/* POLTRONAS JÁ OCUPADAS */
-let occupiedSeats = JSON.parse(localStorage.getItem("occupiedSeats")) || [];
-
-const seatsDiv = document.getElementById("seats");
-
-function renderSeats() {
-  seatsDiv.innerHTML = "";
-
-  seats.forEach(seat => {
-    const div = document.createElement("div");
-    div.className = "seat";
-    div.innerText = seat;
-
-    if (occupiedSeats.includes(seat)) {
-      div.classList.add("occupied");
-    }
-
-    div.onclick = () => {
-      if (div.classList.contains("occupied")) return;
-
-      document.querySelectorAll(".seat")
-        .forEach(s => s.classList.remove("selected"));
-
-      div.classList.add("selected");
-      selectedSeat = seat;
-    };
-
-    seatsDiv.appendChild(div);
-  });
-}
-
-function confirmSeat() {
-  if (!selectedSeat) {
-    alert("Selecione uma poltrona!");
-    return;
-  }
-
-  if (!occupiedSeats.includes(selectedSeat)) {
-    occupiedSeats.push(selectedSeat);
-    localStorage.setItem("occupiedSeats", JSON.stringify(occupiedSeats));
-  }
-
-  alert("Poltrona " + selectedSeat + " confirmada!");
-  renderSeats();
-}
-
-renderSeats();
 </script>
 
 </body>
